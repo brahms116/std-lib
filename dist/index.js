@@ -2,24 +2,24 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Opt = exports.None = exports.Some = exports.RsOption = exports.Err = exports.Ok = exports.RsResult = exports.Whoops = exports.WhoopsBuilder = exports.WhoopsError = void 0;
 class WhoopsError {
-    constructor(errType, ctx, reason, possibleFix) {
+    constructor(errType, context, reason, suggestion) {
         this.errType = errType;
-        this.ctx = ctx;
+        this.context = context;
         this.reason = reason;
-        this.possibleFix = possibleFix;
+        this.suggestion = suggestion;
         console.error(this);
         console.trace();
     }
     appendCtx(ctx) {
-        this.ctx += `\n${ctx}`;
+        this.context += `\n${ctx}`;
         return this;
     }
     toJSON() {
         return {
             errType: this.errType,
-            ctx: this.ctx,
+            context: this.context,
             reason: this.reason,
-            possibleFix: this.possibleFix,
+            suggestion: this.suggestion,
         };
     }
 }
@@ -27,24 +27,24 @@ exports.WhoopsError = WhoopsError;
 class WhoopsBuilder {
     constructor(errType) {
         this.errType = errType;
-        this.ctxValue = "No context given.";
+        this.contextValue = "No context given.";
         this.reasonValue = "No reason given.";
-        this.possibleFixValue = "No possible fixes given.";
+        this.suggestionValue = "No possible fixes given.";
     }
-    ctx(context) {
-        this.ctxValue = context;
+    context(context) {
+        this.contextValue = context;
         return this;
     }
-    reason(reasonForError) {
-        this.reasonValue = reasonForError;
+    reason(reason) {
+        this.reasonValue = reason;
         return this;
     }
-    possibleFix(possibleFixToApply) {
-        this.possibleFixValue = possibleFixToApply;
+    suggestion(suggestion) {
+        this.suggestionValue = suggestion;
         return this;
     }
     build() {
-        return new WhoopsError(this.errType, this.ctxValue, this.reasonValue, this.possibleFixValue);
+        return new WhoopsError(this.errType, this.contextValue, this.reasonValue, this.suggestionValue);
     }
 }
 exports.WhoopsBuilder = WhoopsBuilder;
