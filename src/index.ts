@@ -2,7 +2,7 @@ export interface ToJSON {
   toJSON(): string
 }
 
-export interface Collection<T> {
+export interface Collection<T extends {}> {
   collect(): T[];
   get(index: number): RsOption<T>;
 }
@@ -90,14 +90,14 @@ export class RsResult<T extends {}, E extends {}> {
     return None();
   }
 
-  map<K>(f: (value: T) => K): RsResult<K, E> {
+  map<K extends {}>(f: (value: T) => K): RsResult<K, E> {
     if (this.isOk()) {
       return Ok<K>(f(this.value!));
     }
     return Err(this.error!);
   }
 
-  mapErr<K>(f: (value: E) => K): RsResult<T, K> {
+  mapErr<K extends {}>(f: (value: E) => K): RsResult<T, K> {
     if (this.isErr()) {
       return Err(f(this.error!));
     }
@@ -151,7 +151,7 @@ export class RsOption<T extends {}> {
     return alt;
   }
 
-  map<K>(func: (value: T) => K): RsOption<K> {
+  map<K extends {}>(func: (value: T) => K): RsOption<K> {
     if (this.isSome()) {
       return new RsOption(func(this.value!));
     }
@@ -165,7 +165,7 @@ export class RsOption<T extends {}> {
     return null;
   }
 
-  okOr<E>(e: E): RsResult<T, E> {
+  okOr<E extends {}>(e: E): RsResult<T, E> {
     if (this.isSome()) {
       return Ok(this.value!);
     }
