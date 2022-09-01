@@ -1,57 +1,57 @@
 export class WhoopsError<T extends {}> implements ToJSON {
   constructor(
     public errType: T,
-    public ctx: string,
+    public context: string,
     public reason: string,
-    public possibleFix: string
+    public suggestion: string
   ) {
     console.error(this);
     console.trace();
   }
 
   appendCtx(ctx: string) {
-    this.ctx += `\n${ctx}`;
+    this.context += `\n${ctx}`;
     return this;
   }
 
   toJSON() {
     return {
       errType: this.errType,
-      ctx: this.ctx,
+      context: this.context,
       reason: this.reason,
-      possibleFix: this.possibleFix,
+      suggestion: this.suggestion,
     };
   }
 }
 
 export class WhoopsBuilder<T extends {}> {
-  private ctxValue = "No context given.";
+  private contextValue = "No context given.";
   private reasonValue = "No reason given.";
-  private possibleFixValue = "No possible fixes given.";
+  private suggestionValue = "No possible fixes given.";
 
-  constructor(private errType: T) {}
+  constructor(private errType: T) { }
 
-  ctx(context: string) {
-    this.ctxValue = context;
+  context(context: string) {
+    this.contextValue = context;
     return this;
   }
 
-  reason(reasonForError: string) {
-    this.reasonValue = reasonForError;
+  reason(reason: string) {
+    this.reasonValue = reason;
     return this;
   }
 
-  possibleFix(possibleFixToApply: string) {
-    this.possibleFixValue = possibleFixToApply;
+  suggestion(suggestion: string) {
+    this.suggestionValue = suggestion;
     return this;
   }
 
   build() {
     return new WhoopsError(
       this.errType,
-      this.ctxValue,
+      this.contextValue,
       this.reasonValue,
-      this.possibleFixValue
+      this.suggestionValue
     );
   }
 }
