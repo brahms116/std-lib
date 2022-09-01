@@ -1,6 +1,57 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Opt = exports.None = exports.Some = exports.RsOption = exports.Err = exports.Ok = exports.RsResult = void 0;
+exports.Opt = exports.None = exports.Some = exports.RsOption = exports.Err = exports.Ok = exports.RsResult = exports.Whoops = exports.WhoopsBuilder = exports.WhoopsError = void 0;
+class WhoopsError {
+    constructor(errType, ctx, reason, possibleFix) {
+        this.errType = errType;
+        this.ctx = ctx;
+        this.reason = reason;
+        this.possibleFix = possibleFix;
+        console.error(this);
+        console.trace();
+    }
+    appendCtx(ctx) {
+        this.ctx += `\n${ctx}`;
+        return this;
+    }
+    toJSON() {
+        return {
+            errType: this.errType,
+            ctx: this.ctx,
+            reason: this.reason,
+            possibleFix: this.possibleFix,
+        };
+    }
+}
+exports.WhoopsError = WhoopsError;
+class WhoopsBuilder {
+    constructor(errType) {
+        this.errType = errType;
+        this.ctxValue = "No context given.";
+        this.reasonValue = "No reason given.";
+        this.possibleFixValue = "No possible fixes given.";
+    }
+    ctx(context) {
+        this.ctxValue = context;
+        return this;
+    }
+    reason(reasonForError) {
+        this.reasonValue = reasonForError;
+        return this;
+    }
+    possibleFix(possibleFixToApply) {
+        this.possibleFixValue = possibleFixToApply;
+        return this;
+    }
+    build() {
+        return new WhoopsError(this.errType, this.ctxValue, this.reasonValue, this.possibleFixValue);
+    }
+}
+exports.WhoopsBuilder = WhoopsBuilder;
+function Whoops(errType) {
+    return new WhoopsBuilder(errType);
+}
+exports.Whoops = Whoops;
 class RsResult {
     /** SHOULD NOT CALL CONSTRUCTOR, use Ok or Err instead, if it is unknown,
      * create an RsOption then map it to a RsResult

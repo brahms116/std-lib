@@ -1,5 +1,31 @@
+export declare class WhoopsError<T extends {}> implements ToJSON {
+    errType: T;
+    ctx: string;
+    reason: string;
+    possibleFix: string;
+    constructor(errType: T, ctx: string, reason: string, possibleFix: string);
+    appendCtx(ctx: string): this;
+    toJSON(): {
+        errType: T;
+        ctx: string;
+        reason: string;
+        possibleFix: string;
+    };
+}
+export declare class WhoopsBuilder<T extends {}> {
+    private errType;
+    private ctxValue;
+    private reasonValue;
+    private possibleFixValue;
+    constructor(errType: T);
+    ctx(context: string): this;
+    reason(reasonForError: string): this;
+    possibleFix(possibleFixToApply: string): this;
+    build(): WhoopsError<T>;
+}
+export declare function Whoops<T extends {}>(errType: T): WhoopsBuilder<T>;
 export interface ToJSON {
-    toJSON(): string;
+    toJSON(): any;
 }
 export interface Collection<T extends {}> {
     collect(): T[];
